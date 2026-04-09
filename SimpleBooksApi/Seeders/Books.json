@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "genre": "Programming",
+    "publishedYear": 2008,
+    "price": 34.99,
+    "inStock": true
+  },
+  {
+    "title": "The Pragmatic Programmer",
+    "author": "Andrew Hunt",
+    "genre": "Programming",
+    "publishedYear": 1999,
+    "price": 39.99,
+    "inStock": true
+  },
+  {
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "genre": "Self-help",
+    "publishedYear": 2018,
+    "price": 19.99,
+    "inStock": true
+  },
+  {
+    "title": "Deep Work",
+    "author": "Cal Newport",
+    "genre": "Productivity",
+    "publishedYear": 2016,
+    "price": 24.99,
+    "inStock": false
+  },
+  {
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "genre": "Fiction",
+    "publishedYear": 1988,
+    "price": 14.99,
+    "inStock": true
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "genre": "Dystopian",
+    "publishedYear": 1949,
+    "price": 12.99,
+    "inStock": true
+  },
+  {
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "genre": "Classic",
+    "publishedYear": 1960,
+    "price": 15.99,
+    "inStock": false
+  },
+  {
+    "title": "The Lean Startup",
+    "author": "Eric Ries",
+    "genre": "Business",
+    "publishedYear": 2011,
+    "price": 29.99,
+    "inStock": true
+  },
+  {
+    "title": "Rich Dad Poor Dad",
+    "author": "Robert Kiyosaki",
+    "genre": "Finance",
+    "publishedYear": 1997,
+    "price": 18.99,
+    "inStock": true
+  },
+  {
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "genre": "Fantasy",
+    "publishedYear": 1937,
+    "price": 16.99,
+    "inStock": true
+  }
+]
