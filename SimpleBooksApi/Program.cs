@@ -1,32 +1,54 @@
 using Books.Core.Extensions;
 using Books.Infra.Extensions;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-
-builder.Services.AddInfra(builder.Configuration).AddCore();
-
-builder.Services.AddCors(options =>
+try
 {
-    options.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:3000"));
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    // Add services to the container.
+
+    builder.Services.AddControllers();
+
+    builder.Services.AddInfra(builder.Configuration).AddCore();
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:3000"));
+    });
+
+    builder.Host.UseSerilog((context, services, configuration) =>
+    {
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services);
+    });
+
+    var app = builder.Build();
 
 
-await DbSeeder.Seed(app.Services);
+    await DbSeeder.Seed(app.Services);
 
-// Configure the HTTP request pipeline.
+    // Configure the HTTP request pipeline.
 
-app.UseHttpsRedirection();
+    app.UseSerilogRequestLogging();
 
-app.UseCors();
+    app.UseHttpsRedirection();
 
-app.UseAuthorization();
+    app.UseCors();
 
-app.MapControllers();
+    app.UseAuthorization();
 
-app.Run();
+    app.MapControllers();
+
+    app.Run();
+
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application startup failed");
+}
+finally {
+    Log.CloseAndFlush();
+}
+

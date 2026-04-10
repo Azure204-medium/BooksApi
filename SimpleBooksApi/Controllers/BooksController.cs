@@ -10,11 +10,12 @@ namespace Books.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class BooksController(IMediator mediator) : ControllerBase
+    public class BooksController(IMediator mediator,ILogger<BooksController> logger) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BooksResponseDto>>> GetAll(CancellationToken cancellationToken = default)
         {
+            logger.LogInformation("GetAll called");
            var query = new GetAllBooksQuery();
            IEnumerable<BooksResponseDto> books =  await mediator.Send(query, cancellationToken);
            return Ok(books);
