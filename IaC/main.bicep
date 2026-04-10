@@ -1,6 +1,6 @@
 param location string
 param web object
-
+param sql object
 module devWebApp './modules/webapp/webapp.bicep' = {
   name: 'web'
   params: {
@@ -8,4 +8,9 @@ module devWebApp './modules/webapp/webapp.bicep' = {
     appServicePlanName: web.appServicePlanName
     webAppName: web.webAppName
   }
+}
+
+module devSqlDb './modules/sqlDb/sql.bicep' = {
+  name: 'sql'
+  params: { location: location, sqlDbName: sql.sqlServerName, sqlServerName: sql.sqlDbName }
 }

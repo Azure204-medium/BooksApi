@@ -10,6 +10,12 @@
                 "appServicePlanName" : "books-app-plan-dev",
                 "webAppName" : "books-webapp-dev"
             }
+        },
+        "sql" : {
+            "value" : {
+                "sqlServerName": "books-sql-server-dev",
+                "sqlDbName" : "books-sql-db-dev"
+            }
         }
     }
     
