@@ -1,4 +1,4 @@
-using Books.Core.Extensions;
+﻿using Books.Core.Extensions;
 using Books.Infra.Extensions;
 using Serilog;
 
@@ -35,11 +35,15 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseStaticFiles();
+
     app.UseCors();
 
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.MapFallbackToFile("index.html");   // everything else → React
 
     app.Run();
 
