@@ -1,0 +1,2 @@
+az group create -n Dev-Books-App -l uksouth
+
