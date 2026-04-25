@@ -31,11 +31,11 @@ resource booksSqlServerDatabase 'Microsoft.Sql/servers/databases@2025-02-01-prev
 }
 
 resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
-  name: 'name'
+  name: 'sqlServer'
   location: location
   properties: {
-    administratorLogin: 'administratorLogin'
-    administratorLoginPassword: 'administratorLoginPassword'
+    administratorLogin: sqlAdminUserName
+    administratorLoginPassword: sqlAdminUserName
   }
 }
 
