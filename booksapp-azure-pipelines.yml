@@ -19,9 +19,74 @@ variables:
     value:  'Release'
   - group : BooksApp-variables
 
+resources:
+ repositories:
+   - repository: reactRepo
+     type: github
+     name: Azure204-medium/Books-React
+     #endpoint is the service connection name
+     endpoint: Azure204-medium  
+
 stages:
+  - stage: Build
+    displayName: 'Create Build'
+    jobs:
+      - job: BuildApi
+        displayName: 'Build Api'
+        steps:
+          - task: DotNetCoreCLI@2
+            displayName: 'restore nuget packages'
+            inputs:
+              command: 'restore'
+              projects: '$(solution)'
+              feedsToUse: 'select'
+          - task: DotNetCoreCLI@2
+            displayName: 'Build .net'
+            inputs:
+              command: 'build'
+              projects: '**/*.csproj'
+
+          
+      - job: BuildReact
+        displayName: 'Build React'
+        steps:
+          - checkout: reactRepo
+          # node install
+          - task: UseNode@1
+            displayName: 'Install node.js'
+            inputs:
+              checkLatest: true
+          # React install
+          - task: Npm@1
+            displayName: 'Install npm'
+            inputs:
+              command: 'install'
+              workingDir: 'clientapp'
+            # React build
+          - script: npm run build
+            displayName: 'build react'
+            workingDirectory: 'clientapp'
+          - task: CopyFiles@2
+            displayName: 'copy to wwwroot'
+            inputs:
+                SourceFolder: 'clientapp/build'
+                Contents: '**'
+                TargetFolder: '$(Build.ArtifactStagingDirectory)/wwwroot'
+          - task: DotNetCoreCLI@2
+            displayName: publish .net
+            inputs:
+              command: 'publish'
+              publishWebProjects: true
+              arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+              
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'  
+
   - stage: Infra
-    displayName: 'Create Az Infra'
+    dependsOn: Build
+    displayName: 'Az Infra'
     jobs:
       - job: InfraJob
         displayName: 'Create Az Infra Job'
