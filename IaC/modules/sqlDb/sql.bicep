@@ -44,7 +44,7 @@ resource sqlServerFirewallRules 'Microsoft.Sql/servers/firewallRules@2021-02-01-
   name: 'allow azure resources'
   properties: {
     startIpAddress: '0.0.0.0'
-    endIpAddress: '0.0.0.'
+    endIpAddress: '0.0.0.0'
   }
 }
 
