@@ -49,13 +49,16 @@ stages:
           
       - job: BuildReact
         displayName: 'Build React'
+        dependsOn: BuildApi
         steps:
           - checkout: reactRepo
           # node install
           - task: UseNode@1
             displayName: 'Install node.js'
             inputs:
-              checkLatest: true
+              version: '18.x'
+          - script: node -v
+            displayName: 'Check Node version'
           - script: dir
             displayName: 'Check folder structure'
           # React install
