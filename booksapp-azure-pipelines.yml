@@ -142,6 +142,6 @@ stages:
               azureSubscription: 'Azure subscription 1(a81f821e-5466-4898-8671-bf41188f39b3)'
               appType: 'webApp'
               WebAppName: '$(booksWebApp)'
-              package: '$(Pipeline.Workspace)/drop'
+              package: '$(System.ArtifactsDirectory)/drop/*.zip'
 
          
