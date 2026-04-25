@@ -31,8 +31,8 @@ stages:
   - stage: Build
     displayName: 'Create Build'
     jobs:
-      - job: BuildApi
-        displayName: 'Build Api'
+      - job: BuildApp
+        displayName: 'Build App'
         steps:
           - task: DotNetCoreCLI@2
             displayName: 'restore nuget packages'
@@ -45,14 +45,8 @@ stages:
             inputs:
               command: 'build'
               projects: '**/*.csproj'
-
-          
-      - job: BuildReact
-        displayName: 'Build React'
-        dependsOn: BuildApi
-        steps:
           - checkout: reactRepo
-          # node install
+           # node install
           - task: UseNode@1
             displayName: 'Install node.js'
             inputs:
@@ -88,7 +82,8 @@ stages:
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'  
-
+       
+         
   - stage: Infra
     dependsOn: Build
     displayName: 'Az Infra'
