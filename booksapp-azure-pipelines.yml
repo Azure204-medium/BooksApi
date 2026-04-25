@@ -121,3 +121,27 @@ stages:
               scriptType: 'batch'
               scriptLocation: 'inlineScript'
               inlineScript: 'az webapp config connection-string set -n books-webapp-dev -g books-dev-rg  --connection-string-type SQLAzure --settings BooksDB="Server=tcp:books-sql-db-dev.database.windows.net,1433;Initial Catalog=books-sql-server-dev;Persist Security Info=False;User ID=sqlserveradmin;Password=Admin12345678!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+
+  - stage: deploy
+    displayName: 'Deploy to Az'
+    dependsOn: Infra
+    jobs:
+      - job: deployJob
+        displayName: deploy to Az
+        steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - task: AzureRmWebAppDeployment@5
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Azure subscription 1(a81f821e-5466-4898-8671-bf41188f39b3)'
+              appType: 'webApp'
+              WebAppName: '$(booksWebApp)'
+              package: '$(Pipeline.Workspace)/drop'
+
+         
