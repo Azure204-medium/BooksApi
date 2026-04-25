@@ -30,17 +30,8 @@ resource booksSqlServerDatabase 'Microsoft.Sql/servers/databases@2025-02-01-prev
   }
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
-  name: 'sqlServer'
-  location: location
-  properties: {
-    administratorLogin: sqlAdminUserName
-    administratorLoginPassword: sqlAdminUserName
-  }
-}
-
 resource sqlServerFirewallRules 'Microsoft.Sql/servers/firewallRules@2021-02-01-preview' = {
-  parent: sqlServer
+  parent: booksSqlServer
   name: 'allow azure resources'
   properties: {
     startIpAddress: '0.0.0.0'
