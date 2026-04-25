@@ -42,4 +42,4 @@ stages:
               azureSubscription: 'Azure subscription 1(a81f821e-5466-4898-8671-bf41188f39b3)'
               scriptType: 'batch'
               scriptLocation: 'inlineScript'
-              inlineScript: 'az deployment group create --resource-group $(booksResourceGroup) --template-file $(Build.SourcesDirectory)/main.bicep -- template-parameter-file $(Build.SourcesDirectory)/parameters/parameters.dev.json'
+              inlineScript: 'az deployment group create --resource-group $(booksResourceGroup) --template-file $(Build.SourcesDirectory)/main.bicep --parameters $(Build.SourcesDirectory)/parameters/parameters.dev.json'
