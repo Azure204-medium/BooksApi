@@ -30,4 +30,22 @@ resource booksSqlServerDatabase 'Microsoft.Sql/servers/databases@2025-02-01-prev
   }
 }
 
+resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
+  name: 'name'
+  location: location
+  properties: {
+    administratorLogin: 'administratorLogin'
+    administratorLoginPassword: 'administratorLoginPassword'
+  }
+}
+
+resource sqlServerFirewallRules 'Microsoft.Sql/servers/firewallRules@2021-02-01-preview' = {
+  parent: sqlServer
+  name: 'allow azure resources'
+  properties: {
+    startIpAddress: '0.0.0.0'
+    endIpAddress: '0.0.0.'
+  }
+}
+
 output sqlConnectionString string = 'Server=tcp:${booksSqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${booksSqlServerDatabase};Persist Security Info=False;User ID=${sqlAdminUserName};Password=${sqlAdminPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
