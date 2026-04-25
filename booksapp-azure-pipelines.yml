@@ -64,15 +64,15 @@ stages:
             displayName: 'Install npm'
             inputs:
               command: 'install'
-              workingDir: $(Build.SourcesDirectory)
+              workingDir: '$(Build.SourcesDirectory)/Books-React'
             # React build
           - script: npm run build
             displayName: 'build react'
-            workingDirectory: $(Build.SourcesDirectory)
+            workingDirectory: '$(Build.SourcesDirectory)/Books-React'
           - task: CopyFiles@2
             displayName: 'copy to wwwroot'
             inputs:
-                SourceFolder: '$(Build.SourcesDirectory)/build'
+                SourceFolder: '$(Build.SourcesDirectory)/Books-React/build'
                 Contents: '**'
                 TargetFolder: '$(Build.ArtifactStagingDirectory)/wwwroot'
           - task: DotNetCoreCLI@2
