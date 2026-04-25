@@ -63,15 +63,15 @@ stages:
             displayName: 'Install npm'
             inputs:
               command: 'install'
-              workingDir: 'clientapp'
+              workingDir: $(Build.SourcesDirectory)
             # React build
           - script: npm run build
             displayName: 'build react'
-            workingDirectory: 'clientapp'
+            workingDirectory: $(Build.SourcesDirectory)
           - task: CopyFiles@2
             displayName: 'copy to wwwroot'
             inputs:
-                SourceFolder: 'clientapp/build'
+                SourceFolder: '$(Build.SourcesDirectory)/build'
                 Contents: '**'
                 TargetFolder: '$(Build.ArtifactStagingDirectory)/wwwroot'
           - task: DotNetCoreCLI@2
