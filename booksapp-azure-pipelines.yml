@@ -92,7 +92,7 @@ stages:
           
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publish/'
+              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publish/SimpleBooksApi'
               includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/drop/app.zip'
