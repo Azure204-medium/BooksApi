@@ -53,7 +53,7 @@ stages:
             displayName: publish .net
             inputs:
               command: 'publish'
-              publishWebProjects: true
+              publishWebProjects: false
               arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish'
               zipAfterPublish: false
 
