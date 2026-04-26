@@ -75,6 +75,9 @@ stages:
                 SourceFolder: '$(Build.SourcesDirectory)/Books-React/build'
                 Contents: '**'
                 TargetFolder: '$(Build.SourcesDirectory)/BooksApi/wwwroot'
+
+          - script: dir
+            displayName: 'After copy Check folder structure'
           - task: DotNetCoreCLI@2
             displayName: publish .net
             inputs:
