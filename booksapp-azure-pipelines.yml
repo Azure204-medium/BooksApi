@@ -5,7 +5,7 @@
 
 name: 'Books App Pipeline'
 trigger:
-- master
+ none
 
 pool:
   vmImage: 'windows-latest'
