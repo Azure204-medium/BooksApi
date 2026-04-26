@@ -55,6 +55,7 @@ stages:
               command: 'publish'
               publishWebProjects: true
               arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish'
+              zipAfterPublish: false
 
           - checkout: reactRepo
 
@@ -88,10 +89,17 @@ stages:
           - script: dir
             displayName: 'After copy Check folder structure'
           
-              
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publish/'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/drop/app.zip'
+              replaceExistingArchive: true
+              verbose: true
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
               ArtifactName: 'drop'  
        
          
