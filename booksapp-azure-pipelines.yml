@@ -54,6 +54,7 @@ stages:
             inputs:
               command: 'publish'
               publishWebProjects: false
+              projects: '**/Books.Api.csproj'
               arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish'
               zipAfterPublish: false
 
