@@ -94,6 +94,8 @@ jobs:
        cd react
        npm install
        npm run build
+      env:
+        CI: false
 
     # Copy react build to wwwroot
     - name: Copy react build to wwwroot
