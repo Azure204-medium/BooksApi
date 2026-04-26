@@ -77,10 +77,10 @@ jobs:
 
     # Build api
     - name: Build Api
-      run: dotnet build --configuration $Configuration
+      run: dotnet build --configuration $env:Configuration
     # Publish api
     - name: Publish Api
-      run:  dotnet publish -c $Configuration -o publish
+      run:  dotnet publish -c $env:Configuration -o publish
 
     # Install node
     - name: Setup Node.js environment
