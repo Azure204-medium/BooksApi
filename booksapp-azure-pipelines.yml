@@ -74,7 +74,7 @@ stages:
             inputs:
                 SourceFolder: '$(Build.SourcesDirectory)/Books-React/build'
                 Contents: '**'
-                TargetFolder: '$(Build.ArtifactStagingDirectory)/wwwroot'
+                TargetFolder: '$(Build.SourcesDirectory)/SimpleBooksApi/wwwroot'
           - task: DotNetCoreCLI@2
             displayName: publish .net
             inputs:
