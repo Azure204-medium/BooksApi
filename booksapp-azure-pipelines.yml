@@ -84,7 +84,7 @@ stages:
             inputs:
                 SourceFolder: '$(Build.SourcesDirectory)/Books-React/build'
                 Contents: '**'
-                TargetFolder: '$(Build.ArtifactStagingDirectory)/publish/wwwroot'
+                TargetFolder: '$(Build.ArtifactStagingDirectory)/publish/SimpleBooksApi/wwwroot'
 
           - script: dir
             displayName: 'After copy Check folder structure'
