@@ -49,7 +49,16 @@ stages:
             inputs:
               command: 'build'
               projects: '**/*.csproj'
+          - task: DotNetCoreCLI@2
+            displayName: publish .net
+            inputs:
+              command: 'publish'
+              publishWebProjects: true
+              arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish'
+
           - checkout: reactRepo
+
+        
            # node install
           - task: UseNode@1
             displayName: 'Install node.js'
@@ -74,16 +83,11 @@ stages:
             inputs:
                 SourceFolder: '$(Build.SourcesDirectory)/Books-React/build'
                 Contents: '**'
-                TargetFolder: '$(Build.SourcesDirectory)/BooksApi/wwwroot'
+                TargetFolder: '$(Build.ArtifactStagingDirectory)/publish/wwwroot'
 
           - script: dir
             displayName: 'After copy Check folder structure'
-          - task: DotNetCoreCLI@2
-            displayName: publish .net
-            inputs:
-              command: 'publish'
-              publishWebProjects: true
-              arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+          
               
           - task: PublishBuildArtifacts@1
             inputs:
