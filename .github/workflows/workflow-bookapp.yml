@@ -124,5 +124,58 @@ jobs:
          uses: actions/checkout@v4      
          with:
            fetch-depth: 0
-    
-   
+       # Azure login
+       - name: Azure Login
+         uses: Azure/login@v3
+         with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+       # Create resource grou[
+       - name: Create resource group
+         uses: Azure/cli@v3
+         with:
+            # Specify the script here
+            inlineScript: |
+              az group create -g ${{vars.BOOKSRESOURCEGROUP}} -l uksouth  
+         # Deploy bicep
+       - name: Deploy bicep
+         uses: Azure/cli@v3
+         with:
+            inlineScript: |
+             az deployment group create --resource-group ${{vars.BOOKSRESOURCEGROUP}} \
+             --template-file $GITHUB_WORKSPACE/Iac/main.bicep \
+             --parameters @$GITHUB_WORKSPACE/Iac/parameters/parameters.dev.json
+
+        # update connection string
+       - name: Update Connection string
+         uses: Azure/cli@v3
+         with:
+            inlineScript: | 
+              az webapp config connection-string set -n books-webapp-dev -g ${{vars.BOOKSRESOURCEGROUP}} \
+              --connection-string-type SQLAzure --settings BooksDB="Server=tcp:books-sql-db-dev.database.windows.net,1433;Initial Catalog=books-sql-server-dev;Persist Security Info=False;User ID=sqlserveradmin;Password=Admin12345678!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+              
+ Deploy:
+      name: Deploy to webapp
+      needs: Infra
+      runs-on: windows-latest
+      steps:
+        - name: Download a Build Artifact
+          uses: actions/download-artifact@v3.1.0
+          with:
+            # Artifact name
+            name: drop
+            # Destination path
+            path: artifact
+        # Azure login
+        - name: Azure Login
+          uses: Azure/login@v3
+          with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+           creds: ${{secrets.AZURE_CREDENTIALS}}
+        - name: Azure WebApp
+          uses: Azure/webapps-deploy@v2.2.19
+          with:
+            # Name of the Azure Web App
+            app-name:  ${{vars.BOOKSWEBAPP}}
+            package: artifact
+            
