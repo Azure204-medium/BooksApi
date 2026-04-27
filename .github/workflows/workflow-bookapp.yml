@@ -40,142 +40,140 @@ name: BooksApp CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
-  
   build:
-
     name: Create App Artficat
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on:
+      windows-latest # For a list of available runner types, refer to
+      # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: BooksApi.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Configuration : release
+      Solution_Name: BooksApi.sln # Replace with your solution name, i.e. MyWpfApp.sln.
+      Configuration: release
     steps:
-     # for .net api
-    - name: Checkout Api Repo
-      uses: actions/checkout@v4      
-      with:
-        fetch-depth: 0
-    #for react app
-    - name: Checkout react repo
-      uses: actions/checkout@v4
-      with:
-        repository: Azure204-medium/Books-React
-        path: react
-        fetch-depth: 0
+      # for .net api
+      - name: Checkout Api Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      #for react app
+      - name: Checkout react repo
+        uses: actions/checkout@v4
+        with:
+          repository: Azure204-medium/Books-React
+          path: react
+          fetch-depth: 0
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
-    # Build api
-    - name: Build Api
-      run: dotnet build --configuration $env:Configuration
-    # Publish api
-    - name: Publish Api
-      run:  dotnet publish -c $env:Configuration -o publish
+      # Build api
+      - name: Build Api
+        run: dotnet build --configuration $env:Configuration
+      # Publish api
+      - name: Publish Api
+        run: dotnet publish -c $env:Configuration -o publish
 
-    # Install node
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v6.4.0
-      with:
-        node-version: 18
+      # Install node
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 18
 
-    # create react build
-    - name: Build react
-      run: |
-       cd react
-       npm install
-       npm run build
-      env:
-        CI: false
+      # create react build
+      - name: Build react
+        run: |
+          cd react
+          npm install
+          npm run build
+        env:
+          CI: false
 
-    # Copy react build to wwwroot
-    - name: Copy react build to wwwroot
-      run: |
-        xcopy react\build publish\wwwroot /E /I /Y
+      # Copy react build to wwwroot
+      - name: Copy react build to wwwroot
+        run: |
+          xcopy react\build publish\wwwroot /E /I /Y
 
-    # Copy artifacts
-    - name: Create and copy artfiacts
-      run: |
-        mkdir artifact
-        xcopy publish artifact /E /I /Y
-      
-    # upload artifact
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v7.0.1
-      with: 
-        name: drop
-        path: artifact
-   
+      # Copy artifacts
+      - name: Create and copy artfiacts
+        run: |
+          mkdir artifact
+          xcopy publish artifact /E /I /Y
+
+      # upload artifact
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: drop
+          path: artifact
+
   infra:
-     name: Creat Az infra
-     runs-on: windows-latest
-     needs: build
-     steps:
-       - name: Checkout Api Repo
-         uses: actions/checkout@v4      
-         with:
-           fetch-depth: 0
-       # Azure login
-       - name: Azure Login
-         uses: Azure/login@v3
-         with:
+    name: Creat Az infra
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Checkout Api Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Azure login
+      - name: Azure Login
+        uses: Azure/login@v3
+        with:
           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
           creds: ${{secrets.AZURE_CREDENTIALS}}
-       # Create resource grou[
-       - name: Create resource group
-         uses: Azure/cli@v3
-         with:
-            # Specify the script here
-            inlineScript: |
-              az group create -g ${{vars.BOOKSRESOURCEGROUP}} -l uksouth  
-         # Deploy bicep
-       - name: Deploy bicep
-         uses: Azure/cli@v3
-         with:
-            inlineScript: |
-             az deployment group create --resource-group ${{vars.BOOKSRESOURCEGROUP}} \
-             --template-file $GITHUB_WORKSPACE/Iac/main.bicep \
-             --parameters @$GITHUB_WORKSPACE/Iac/parameters/parameters.dev.json
+      # Create resource grou[
+      - name: Create resource group
+        uses: Azure/cli@v3
+        with:
+          # Specify the script here
+          inlineScript: |
+            az group create -g ${{vars.BOOKSRESOURCEGROUP}} -l uksouth
+        # Deploy bicep
+      - name: Deploy bicep
+        uses: Azure/cli@v3
+        with:
+          inlineScript: |
+            az deployment group create --resource-group ${{vars.BOOKSRESOURCEGROUP}} \
+            --template-file $GITHUB_WORKSPACE/Iac/main.bicep \
+            --parameters @$GITHUB_WORKSPACE/Iac/parameters/parameters.dev.json
 
         # update connection string
-       - name: Update Connection string
-         uses: Azure/cli@v3
-         with:
-            inlineScript: | 
-              az webapp config connection-string set -n books-webapp-dev -g ${{vars.BOOKSRESOURCEGROUP}} \
-              --connection-string-type SQLAzure --settings BooksDB="Server=tcp:books-sql-db-dev.database.windows.net,1433;Initial Catalog=books-sql-server-dev;Persist Security Info=False;User ID=sqlserveradmin;Password=Admin12345678!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
-              
- Deploy:
-      name: Deploy to webapp
-      needs: Infra
-      runs-on: windows-latest
-      steps:
-        - name: Download a Build Artifact
-          uses: actions/download-artifact@v3.1.0
-          with:
-            # Artifact name
-            name: drop
-            # Destination path
-            path: artifact
-        # Azure login
-        - name: Azure Login
-          uses: Azure/login@v3
-          with:
+      - name: Update Connection string
+        uses: Azure/cli@v3
+        with:
+          inlineScript: |
+            az webapp config connection-string set -n books-webapp-dev -g ${{vars.BOOKSRESOURCEGROUP}} \
+            --connection-string-type SQLAzure --settings BooksDB="Server=tcp:books-sql-db-dev.database.windows.net,1433;Initial Catalog=books-sql-server-dev;Persist Security Info=False;User ID=sqlserveradmin;Password=Admin12345678!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+
+  Deploy:
+    name: Deploy to webapp
+    needs: Infra
+    runs-on: windows-latest
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.1.0
+        with:
+          # Artifact name
+          name: drop
+          # Destination path
+          path: artifact
+      # Azure login
+      - name: Azure Login
+        uses: Azure/login@v3
+        with:
           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-           creds: ${{secrets.AZURE_CREDENTIALS}}
-        - name: Azure WebApp
-          uses: Azure/webapps-deploy@v2.2.19
-          with:
-            # Name of the Azure Web App
-            app-name:  ${{vars.BOOKSWEBAPP}}
-            package: artifact
-            
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+      - name: Azure WebApp
+        uses: Azure/webapps-deploy@v2.2.19
+        with:
+          # Name of the Azure Web App
+          app-name: ${{vars.BOOKSWEBAPP}}
+          package: artifact
