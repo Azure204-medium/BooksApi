@@ -156,7 +156,7 @@ jobs:
         with:
           inlineScript: |
             az webapp config connection-string set -n books-webapp-dev -g ${{vars.BOOKSRESOURCEGROUP}} \
-            --connection-string-type SQLAzure --settings BooksDB="Server=tcp:books-sql-db-dev.database.windows.net,1433;Initial Catalog=books-sql-server-dev;Persist Security Info=False;User ID=sqlserveradmin;Password=Admin12345678!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+            --connection-string-type SQLAzure --settings BooksDB="Server=tcp:books-sql-db-dev.database.windows.net,1433;Initial Catalog=books-sql-server-dev;Persist Security Info=False;User ID=sqlserveradmin;Password=Admin12345678!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 
   Deploy:
     name: Deploy to webapp
