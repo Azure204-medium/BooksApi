@@ -147,8 +147,8 @@ jobs:
         with:
           inlineScript: |
             az deployment group create --resource-group ${{vars.BOOKSRESOURCEGROUP}} \
-            --template-file $GITHUB_WORKSPACE/SimpleBooksApi/IaC/main.bicep \
-            --parameters @$GITHUB_WORKSPACE/SimpleBooksApi/IaC/parameters/parameters.dev.json
+            --template-file $GITHUB_WORKSPACE/IaC/main.bicep \
+            --parameters @$GITHUB_WORKSPACE/IaC/parameters/parameters.dev.json
 
         # update connection string
       - name: Update Connection string
