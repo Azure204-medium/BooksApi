@@ -136,14 +136,19 @@ jobs:
           # Specify the script here
           inlineScript: |
             az group create -g ${{vars.BOOKSRESOURCEGROUP}} -l uksouth
+      # print folder structure
+      - name: Debug folder structure
+        run: |
+          pwd
+          ls -R
         # Deploy bicep
       - name: Deploy bicep
         uses: Azure/cli@v3
         with:
           inlineScript: |
             az deployment group create --resource-group ${{vars.BOOKSRESOURCEGROUP}} \
-            --template-file $GITHUB_WORKSPACE/Iac/main.bicep \
-            --parameters @$GITHUB_WORKSPACE/Iac/parameters/parameters.dev.json
+            --template-file $GITHUB_WORKSPACE/SimpleBooksApi/IaC/main.bicep \
+            --parameters @$GITHUB_WORKSPACE/SimpleBooksApi/IaC/parameters/parameters.dev.json
 
         # update connection string
       - name: Update Connection string
