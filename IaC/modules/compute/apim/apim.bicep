@@ -1,21 +1,25 @@
 @description('location')
 param location string
 
-// create apim 
-resource apiManagementInstance 'Microsoft.ApiManagement/service@2025-03-01-preview' = {
-  name: 'bookapim'
-  location: location
-  sku: {
-    capacity: 1
-    name: 'Developer'
-  }
-  properties: {
-    virtualNetworkType: 'None'
-    publisherEmail: 'rajaaz104learner02@outlook.com'
-    publisherName: 'books-app'
-  }
-}
+// // create apim 
+// resource apiManagementInstance 'Microsoft.ApiManagement/service@2025-03-01-preview' = {
+//   name: 'bookapim'
+//   location: location
+//   sku: {
+//     capacity: 1
+//     name: 'Developer'
+//   }
+//   properties: {
+//     virtualNetworkType: 'None'
+//     publisherEmail: 'rajaaz104learner02@outlook.com'
+//     publisherName: 'books-app'
+//   }
+// }
 
+// create apim 
+resource apiManagementInstance 'Microsoft.ApiManagement/service@2025-03-01-preview' existing = {
+  name: 'bookapim'
+}
 // create api
 resource api 'Microsoft.ApiManagement/service/apis@2025-03-01-preview' = {
   name: 'books-api'
